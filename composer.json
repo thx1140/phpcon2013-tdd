@@ -1,0 +1,12 @@
+{
+    "name": "krzysztof.szlapinski/tdd4phpcon2013",
+    "authors": [
+        {
+            "name": "Krzysztof Szlapinski",
+            "email": "krzysztof.szlapinski@allegro.pl"
+        }
+    ],
+    "autoload": {
+        "psr-0": {"Phpcon2013\\": "Src/"}
+    }
+}
