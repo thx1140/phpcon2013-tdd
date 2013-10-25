@@ -1,5 +1,6 @@
 <?php
 use Phpcon2013\Repository\UserRepository;
+use Phpcon2013\Entity\User;
 
 class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
     /**
@@ -26,6 +27,41 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
         $userRepository = new UserRepository($usersCollection);
         $user = $userRepository->findByLogin("notExistingUserLogin");
         $this->assertNull($user);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotFindUserWithWrongPasswordHash() {
+        $userRepository = new UserRepository(
+            array(
+                "login" => array(
+                    "id" => 1,
+                    "login" => "login",
+                    "passwordHash" => "wrongHash"
+                )
+            )
+        );
+        $user = $userRepository->findByLoginAndPasswordHash('login','hash');
+        $this->assertNull($user);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldFindUserByLoginAndPasswordHash() {
+        $userRepository = new UserRepository(
+            array(
+                "login" => array(
+                    "id" => 1,
+                    "login" => "login",
+                    "passwordHash" => "hash"
+                )
+            )
+        );
+        /** @var User $user */
+        $user = $userRepository->findByLoginAndPasswordHash('login','hash');
+        $this->assertEquals(1, $user->getId());
     }
 
     /**
