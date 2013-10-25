@@ -47,4 +47,16 @@ class UserRepository {
         );
         return $user;
     }
+
+    public function findByLoginAndPasswordHash($login, $hash)
+    {
+        $user = null;
+        if($this->userExists($login)) {
+            $user = $this->createUser($login);
+            if($user->getPasswordHash() != $hash) {
+                $user = null;
+            }
+        }
+        return $user;
+    }
 }
