@@ -7,7 +7,7 @@ class Authenticator {
 
     public function authenticate($login, $password)
     {
-        if(empty($login)) {
+        if (empty($login)) {
             return false;
         }
     }
