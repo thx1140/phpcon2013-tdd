@@ -24,18 +24,13 @@ class AuthenticatorTest extends PHPUnit_Framework_TestCase {
      */
     public function shouldAuthenticateUserWithCorrectCredentials() {
 
-        $hasherMockBuilder = $this->getMockBuilder('Phpcon2013\Security\Hasher');
-        $hasherMockBuilder->disableOriginalConstructor();
-        $hasherMockBuilder->setMethods(array('hash'));
-        $hasherMock = $hasherMockBuilder->getMock();
+        $hasherMock = $this->getMock('Phpcon2013\Security\Hasher', array(), array(), '', false);
         $hasherMock->expects($this->atLeastOnce())
             ->method('hash')
             ->with('correctPassword')
             ->will($this->returnValue('hashedPassword'));
 
-        $userRepositoryMockBuilder = $this->getMockBuilder('Phpcon2013\Repository\UserRepository');
-        $userRepositoryMockBuilder->disableOriginalConstructor();
-        $userRepositoryMock = $userRepositoryMockBuilder->getMock();
+        $userRepositoryMock = $this->getMock('Phpcon2013\Repository\UserRepository', array(), array(), '', false);
         $userRepositoryMock->expects($this->atLeastOnce())
             ->method('findByLoginAndPasswordHash')
             ->with('login', 'hashedPassword')
