@@ -1,9 +1,5 @@
 <?php
-
-
 use Phpcon2013\Authentication\Authenticator;
-use Phpcon2013\Security\Hasher;
-use Phpcon2013\Repository\UserRepository;
 use Phpcon2013\Entity\User;
 
 
@@ -12,7 +8,10 @@ class AuthenticatorTest extends PHPUnit_Framework_TestCase {
      * @test
      */
     public function shouldNotAuthenticateUserWithEmptyPassword() {
-        $authenticator = new Authenticator(new Hasher(''), new UserRepository(array()));
+        $userRepositoryMock = $this->produceRepositoryMock();
+        $hasherMock = $this->produceHasherMock();
+
+        $authenticator = new Authenticator($userRepositoryMock, $hasherMock);
         $emptyLogin = '';
         $anyPassword = 'anypassword';
         $result = $authenticator->authenticate($emptyLogin, $anyPassword);
@@ -24,20 +23,38 @@ class AuthenticatorTest extends PHPUnit_Framework_TestCase {
      */
     public function shouldAuthenticateUserWithCorrectCredentials() {
 
-        $hasherMock = $this->getMock('Phpcon2013\Security\Hasher', array(), array(), '', false);
+        $hasherMock = $this->produceHasherMock();
         $hasherMock->expects($this->atLeastOnce())
             ->method('hash')
             ->with('correctPassword')
             ->will($this->returnValue('hashedPassword'));
 
-        $userRepositoryMock = $this->getMock('Phpcon2013\Repository\UserRepository', array(), array(), '', false);
+        $userRepositoryMock = $this->produceRepositoryMock();
         $userRepositoryMock->expects($this->atLeastOnce())
             ->method('findByLoginAndPasswordHash')
             ->with('login', 'hashedPassword')
             ->will($this->returnValue(new User(1,'login','hashedPassword')));
 
-        $authenticator = new Authenticator($hasherMock, $userRepositoryMock);
+        $authenticator = new Authenticator($userRepositoryMock, $hasherMock);
         $result = $authenticator->authenticate('login', 'correctPassword');
         $this->assertTrue($result);
+    }
+
+    /**
+     * @return PHPUnit_Framework_MockObject_MockObject
+     */
+    private function produceHasherMock()
+    {
+        $hasherMock = $this->getMock('Phpcon2013\Security\Hasher', array(), array(), '', false);
+        return $hasherMock;
+    }
+
+    /**
+     * @return PHPUnit_Framework_MockObject_MockObject
+     */
+    private function produceRepositoryMock()
+    {
+        $userRepositoryMock = $this->getMock('Phpcon2013\Repository\UserRepository', array(), array(), '', false);
+        return $userRepositoryMock;
     }
 }

@@ -11,7 +11,7 @@ class Authenticator {
     /** @var UserRepository  */
     private $userRepository;
 
-    public function __construct(Hasher $hasher, UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, Hasher $hasher)
     {
         $this->hasher = $hasher;
         $this->userRepository = $userRepository;
